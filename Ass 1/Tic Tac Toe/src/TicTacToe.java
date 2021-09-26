@@ -1,18 +1,18 @@
+import java.util.Scanner;
 
 public class TicTacToe {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		char[][] gameboard = {{' ', '|', ' ', '|', ' '}, 
-								{'-', '+', '-', '+', '-'},
-								{' ', '|', ' ', '|', ' '},
-								{'-', '+', '-', '+', '-'},
-								{' ', '|', ' ', '|', ' '}};
+		Scanner input = new Scanner(System.in);
 		
-		for (int i = 0; i<5; i++) {
-			System.out.println(gameboard[i]);
-		}
+		GameBoard board1 = new GameBoard();
 		
+		board1.printBoard();
+		System.out.println("Enter position from 1-9");
+		int position = Integer.parseInt(input.nextLine());
+		
+		board1.
 	}
 
 }

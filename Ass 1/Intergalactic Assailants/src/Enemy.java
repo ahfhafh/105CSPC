@@ -39,7 +39,7 @@ public class Enemy extends Player {
      * 
      * @param enemySpeed
      */
-    public void enemyMovement(int enemySpeed) {
+    public void setEnemyMovement(int enemySpeed) {
         if (getEnemyMovementRight() == true) {
             if (getX_Coordinate() >= 930) {
                 moveDown(50);

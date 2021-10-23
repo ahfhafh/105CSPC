@@ -11,10 +11,8 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.text.Font;
 
 import java.io.*;
-import java.util.*;
 
 /**
  * Main menu screen for the game 19.03.15
@@ -23,87 +21,134 @@ import java.util.*;
 public class GUI extends Application {
 
     private static String filePath = System.getProperty("user.dir");
-    private static int aEnemiesToSpawn, aEnemiesKilled, aEnemyMovementSpeed, aEnemyProjectileSpeed, aWavesKilled,
-            aScore;
+    private static int aEnemiesKilled, aEnemyMovementSpeed, aEnemyProjectileSpeed, aWavesKilled, aScore;
+    static Music backgroundMusic;
 
-    // Background Music
-    int maxVolume = 100;
-    int volume = 40;
-    static String Backgroundmsc = filePath + "\\SFX\\8_Bit_March.mp3";
-    static Media Backgroundsnd = new Media(new File(Backgroundmsc).toURI().toString());
-    static MediaPlayer playBackgroundmsc = new MediaPlayer(Backgroundsnd);
-    float log1 = (float) (Math.log(maxVolume - volume) / Math.log(maxVolume));
+    @Override
+    public void start(Stage stage) throws Exception {
+        playBackgroundmsc();
 
-    /**
-     * method that makes sound when the button is clicked
-     */
+        ImageView backgroundImage = createBackgroundImage();
+        ImageView titleImage = createTitleImage();
+        ImageView instructionsImage = createControlsImage();
+        ImageView playButtonImage = createPlayButtonImage();
+        ImageView exitButtonImage = createExitButtonImage();
+        ImageView loadButtonImage = createLoadButtonImage();
+        Image moonIcon = createMoonIcon();
+
+        Button play_button = createPlayButton(stage, playButtonImage);
+        Button exit_button = createExitButton(stage, exitButtonImage);
+        Button load_button = createLoadButton(stage, loadButtonImage);
+
+        Pane root = new Pane();
+        root.getChildren().addAll(backgroundImage, titleImage, play_button, exit_button, load_button, loadButtonImage, instructionsImage);
+        Scene scene = new Scene(root, 1300, 730);
+        stage.setTitle("Intergalactic Assailants");
+        stage.getIcons().add(moonIcon);
+        stage.setScene(scene);
+        stage.show();
+    }
+
     public static void btnClickSound() {
         String btnClickSound = filePath + "\\SFX\\casual-death-loose.wav";
         MediaPlayer playbtnClickSound = new MediaPlayer(new Media(new File(btnClickSound).toURI().toString()));
         playbtnClickSound.play();
     }
 
-    /**
-     * method that stops background music
-     */
-    public static void stopBackgroundMusic() {
-        playBackgroundmsc.stop();
+    public static void playBackgroundmsc() {
+        backgroundMusic = Music.createMusic("\\SFX\\8_Bit_March.mp3");
+        backgroundMusic.startMusic();
+    }
+    
+
+    protected static ImageView createBackgroundImage() throws FileNotFoundException {
+        FileInputStream backgroundFile = new FileInputStream(filePath + "\\Textures\\space.png");
+        Image backgroundImg = new Image(backgroundFile, 1920, 1080, false, true);
+        ImageView backgroundImage = new ImageView();
+
+        backgroundImage.setImage(backgroundImg);
+        backgroundImage.setLayoutX(0);
+        backgroundImage.setLayoutY(0);
+        backgroundImage.setFitHeight(1080);
+        backgroundImage.setFitWidth(1300);
+        backgroundImage.setPreserveRatio(true);
+
+        return backgroundImage;
     }
 
-    /**
-     * starts background music
-     */
-    public static void startBackgroundMusic() {
-        playBackgroundmsc.play();
+    protected static ImageView createTitleImage() throws FileNotFoundException {
+        FileInputStream titleFile = new FileInputStream(filePath + "\\Textures\\title.png");
+        Image titleImg = new Image(titleFile, 777, 174, false, true);
+        ImageView titleImage = new ImageView();
+
+        titleImage.setImage(titleImg);
+        titleImage.setLayoutX(250);
+        titleImage.setLayoutY(180);
+
+        return titleImage;
     }
 
-    @Override
-    public void start(Stage stage) throws Exception {
+    protected static ImageView createControlsImage() throws FileNotFoundException {
+        FileInputStream controlsFile = new FileInputStream(filePath + "\\Textures\\commands.png");
+        Image controlsImg = new Image(controlsFile, 500, 232, false, true);
+        ImageView instructionsImage = new ImageView();
+        
+        instructionsImage.setImage(controlsImg);
+        instructionsImage.setLayoutX(800);
+        instructionsImage.setLayoutY(430);
 
-        playBackgroundmsc.setOnEndOfMedia(new Runnable() {
-            public void run() {
-                playBackgroundmsc.stop();
-                playBackgroundmsc.play();
-            }
-        });
-        playBackgroundmsc.setVolume(1 - log1);
-        startBackgroundMusic();
+        return instructionsImage;
+    }
 
-        Pane root = new Pane();
+    protected static ImageView createPlayButtonImage() throws FileNotFoundException {
+        FileInputStream playButtonFile = new FileInputStream(filePath + "\\Textures\\start.png");
+        Image playButtonImg = new Image(playButtonFile, 269, 84, false, true);
+        ImageView playButtonImage = new ImageView();
 
-        FileInputStream titleBg = new FileInputStream(filePath + "\\Textures\\space.png");
-        Image titleScreen = new Image(titleBg, 1920, 1080, false, true);
-        FileInputStream titleText = new FileInputStream(filePath + "\\Textures\\title.png");
-        Image title = new Image(titleText, 777, 174, false, true);
-        FileInputStream commands = new FileInputStream(filePath + "\\Textures\\commands.png");
-        Image controls = new Image(commands, 500, 232, false, true);
-        FileInputStream playPath = new FileInputStream(filePath + "\\Textures\\start.png");
-        Image playButton = new Image(playPath, 269, 84, false, true);
-        FileInputStream exitPath = new FileInputStream(filePath + "\\Textures\\exit.png");
-        Image exitButton = new Image(exitPath, 267, 82, false, true);
-        FileInputStream scorePath = new FileInputStream(filePath + "\\Textures\\score.png");
-        Image score = new Image(scorePath, 186, 44, false, true);
-        FileInputStream icon = new FileInputStream(filePath + "\\Textures\\moon.png");
-        Image moon = new Image(icon, 50, 50, false, true);
+        playButtonImage.setImage(playButtonImg);
+        playButtonImage.setLayoutX(500);
+        playButtonImage.setLayoutY(400);
 
-        ImageView scoreNode = new ImageView();
-        scoreNode.setImage(score);
+        return playButtonImage;
+    }
 
-        ImageView imageView = new ImageView();
-        imageView.setImage(titleScreen);
+    protected static ImageView createExitButtonImage() throws FileNotFoundException {
+        FileInputStream exitButtonFile = new FileInputStream(filePath + "\\Textures\\exit.png");
+        Image exitButtonImg = new Image(exitButtonFile, 267, 82, false, true);
+        ImageView exitButtonImage = new ImageView();
 
-        ImageView titleNode = new ImageView();
-        titleNode.setImage(title);
+        exitButtonImage.setImage(exitButtonImg);
+        exitButtonImage.setLayoutX(500);
+        exitButtonImage.setLayoutY(500);
+        
+        return exitButtonImage;
+    }
 
-        ImageView instructions = new ImageView();
-        instructions.setImage(controls);
+    protected static ImageView createLoadButtonImage() throws FileNotFoundException {
+        FileInputStream loadButtonFile = new FileInputStream(filePath + "\\Textures\\load.png");
+        Image loadButtonImg = new Image(loadButtonFile, 269, 84, false, true);
+        ImageView loadButtonImage = new ImageView();
 
+        loadButtonImage.setImage(loadButtonImg);
+        loadButtonImage.setLayoutX(500);
+        loadButtonImage.setLayoutY(600);
+
+        return loadButtonImage;
+
+    }
+
+    protected static Image createMoonIcon() throws FileNotFoundException {
+        FileInputStream moonIconFile = new FileInputStream(filePath + "\\Textures\\moon.png");
+        Image moonImg = new Image(moonIconFile, 50, 50, false, true);
+
+        return moonImg;
+    }
+
+    private Button createPlayButton(Stage stage, ImageView playButtonImage) {
+        // Create play button
         Button play_button = new Button();
-        ImageView playButtonNode = new ImageView();
-        playButtonNode.setImage(playButton);
-        play_button.setGraphic(playButtonNode);
-        play_button
-                .setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+        play_button.setGraphic(playButtonImage);
+        play_button.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
         play_button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent start) {
@@ -116,12 +161,16 @@ public class GUI extends Application {
             }
         });
 
+        play_button.setLayoutX(500);
+        play_button.setLayoutY(400);
+
+        return play_button;
+    }
+
+    private Button createExitButton(Stage stage, ImageView exitButtonImage) {
         Button exit_button = new Button();
-        ImageView exitButtonNode = new ImageView();
-        exitButtonNode.setImage(exitButton);
-        exit_button.setGraphic(exitButtonNode);
-        exit_button
-                .setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+        exit_button.setGraphic(exitButtonImage);
+        exit_button.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
         exit_button.setOnAction(new EventHandler<ActionEvent>() {
 
             @Override
@@ -129,15 +178,17 @@ public class GUI extends Application {
                 System.exit(0);
             }
         });
-        // Create load button
-        FileInputStream loadPath = new FileInputStream(filePath + "\\Textures\\load.png");
-        Image loadButton = new Image(loadPath, 269, 84, false, true);
+
+        exit_button.setLayoutX(500);
+        exit_button.setLayoutY(500);
+        
+        return exit_button;
+    }
+
+    private Button createLoadButton(Stage stage, ImageView loadButtonImage) {
         Button load_button = new Button();
-        ImageView loadButtonNode = new ImageView();
-        loadButtonNode.setImage(loadButton);
-        load_button.setGraphic(loadButtonNode);
-        load_button
-                .setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+        load_button.setGraphic(loadButtonImage);
+        load_button.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
         load_button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent save) {
@@ -151,8 +202,6 @@ public class GUI extends Application {
                             aEnemyMovementSpeed = Integer.parseInt(breader.readLine());
                         if (i == 3)
                             aEnemyProjectileSpeed = Integer.parseInt(breader.readLine());
-                        if (i == 4)
-                            aEnemiesToSpawn = Integer.parseInt(breader.readLine());
                         if (i == 5)
                             aWavesKilled = Integer.parseInt(breader.readLine());
                         if (i == 6)
@@ -167,43 +216,11 @@ public class GUI extends Application {
                 btnClickSound();
             }
         });
+
         load_button.setLayoutX(500);
         load_button.setLayoutY(600);
-        loadButtonNode.setLayoutX(500);
-        loadButtonNode.setLayoutY(600);
 
-        imageView.setLayoutX(0);
-        imageView.setLayoutY(0);
-        imageView.setFitHeight(1080);
-        imageView.setFitWidth(1300);
-        imageView.setPreserveRatio(true);
-
-        titleNode.setLayoutX(250);
-        titleNode.setLayoutY(180);
-
-        instructions.setLayoutX(800);
-        instructions.setLayoutY(430);
-
-        play_button.setLayoutX(500);
-        play_button.setLayoutY(400);
-        playButtonNode.setLayoutX(500);
-        playButtonNode.setLayoutY(400);
-
-        exit_button.setLayoutX(500);
-        exit_button.setLayoutY(500);
-        exitButtonNode.setLayoutX(500);
-        exitButtonNode.setLayoutY(500);
-
-        scoreNode.setLayoutX(950);
-        scoreNode.setLayoutY(620);
-
-        root.getChildren().addAll(imageView, titleNode, play_button, exit_button, load_button, loadButtonNode,
-                instructions);
-        Scene scene = new Scene(root, 1300, 730);
-        stage.setTitle("Intergalactic Assailants");
-        stage.getIcons().add(moon);
-        stage.setScene(scene);
-        stage.show();
+        return load_button;
     }
 
 }

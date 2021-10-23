@@ -31,7 +31,7 @@ public class Projectile extends Player {
      * 
      * @param speed
      */
-    public void projectileMoving(int speed) {
+    public void setProjectileMovingSpeed(int speed) {
         if (projectileMovingUp == true)
             moveUp(speed);
         if (projectileMovingUp == false)
